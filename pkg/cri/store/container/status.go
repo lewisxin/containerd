@@ -80,6 +80,8 @@ type Status struct {
 	StartedAt int64
 	// FinishedAt is the finished timestamp.
 	FinishedAt int64
+	// PausedAt is the paused timestamp.
+	PausedAt int64
 	// ExitCode is the container exit code.
 	ExitCode int32
 	// CamelCase string explaining why container is in its current state.
@@ -107,6 +109,9 @@ func (s Status) State() runtime.ContainerState {
 	}
 	if s.FinishedAt != 0 {
 		return runtime.ContainerState_CONTAINER_EXITED
+	}
+	if s.PausedAt != 0 {
+		return runtime.ContainerState_CONTAINER_PAUSED
 	}
 	if s.StartedAt != 0 {
 		return runtime.ContainerState_CONTAINER_RUNNING

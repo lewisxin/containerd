@@ -33,6 +33,8 @@ var (
 	containerRemoveTimer        metrics.LabeledTimer
 	containerCreateTimer        metrics.LabeledTimer
 	containerStopTimer          metrics.LabeledTimer
+	containerPauseTimer         metrics.LabeledTimer
+	containerResumeTimer        metrics.LabeledTimer
 	containerStartTimer         metrics.LabeledTimer
 	containerEventsDroppedCount metrics.Counter
 
@@ -57,6 +59,8 @@ func init() {
 	containerRemoveTimer = ns.NewLabeledTimer("container_remove", "time to remove a container", "runtime")
 	containerCreateTimer = ns.NewLabeledTimer("container_create", "time to create a container", "runtime")
 	containerStopTimer = ns.NewLabeledTimer("container_stop", "time to stop a container", "runtime")
+	containerPauseTimer = ns.NewLabeledTimer("container_pause", "time to pause a container", "runtime")
+	containerResumeTimer = ns.NewLabeledTimer("container_resume", "time to resume a container", "runtime")
 	containerStartTimer = ns.NewLabeledTimer("container_start", "time to start a container", "runtime")
 	containerEventsDroppedCount = ns.NewCounter("container_events_dropped", "count container discarding event total from server start")
 

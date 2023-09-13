@@ -63,6 +63,10 @@ service RuntimeService {
     rpc CreateContainer(CreateContainerRequest) returns (CreateContainerResponse) {}
     // StartContainer starts the container.
     rpc StartContainer(StartContainerRequest) returns (StartContainerResponse) {}
+    // PauseContainer pauses the container.
+    rpc PauseContainer(PauseContainerRequest) returns (PauseContainerResponse) {}
+    // ResumeContainer resumes the container.
+    rpc ResumeContainer(ResumeContainerRequest) returns (ResumeContainerResponse) {}
     // StopContainer stops a running container with a grace period (i.e., timeout).
     // This call is idempotent, and must not return an error if the container has
     // already been stopped.
@@ -1128,6 +1132,20 @@ message StartContainerRequest {
 
 message StartContainerResponse {}
 
+message PauseContainerRequest {
+    // ID of the container to pause.
+    string container_id = 1;
+}
+
+message PauseContainerResponse {}
+
+message ResumeContainerRequest {
+    // ID of the container to resume.
+    string container_id = 1;
+}
+
+message ResumeContainerResponse {}
+
 message StopContainerRequest {
     // ID of the container to stop.
     string container_id = 1;
@@ -1150,6 +1168,7 @@ enum ContainerState {
     CONTAINER_RUNNING = 1;
     CONTAINER_EXITED  = 2;
     CONTAINER_UNKNOWN = 3;
+    CONTAINER_PAUSED  = 4;
 }
 
 // ContainerStateValue is the wrapper of ContainerState.
@@ -1257,6 +1276,8 @@ message ContainerStatus {
     string log_path = 15;
     // Resource limits configuration of the container.
     ContainerResources resources = 16;
+    // Paused time of the container in nanoseconds. Default: 0 (not specified).
+    int64 paused_at = 17;
 }
 
 message ContainerStatusResponse {
@@ -1770,6 +1791,9 @@ enum ContainerEventType {
 
     // Container deleted
     CONTAINER_DELETED_EVENT = 3;
+
+    // Container paused
+    CONTAINER_PAUSED_EVENT = 4;
 }
 
 message ListMetricDescriptorsRequest {}

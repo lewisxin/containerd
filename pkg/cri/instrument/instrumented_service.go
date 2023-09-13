@@ -197,6 +197,38 @@ func (in *instrumentedService) StartContainer(ctx context.Context, r *runtime.St
 	return res, errdefs.ToGRPC(err)
 }
 
+func (in *instrumentedService) PauseContainer(ctx context.Context, r *runtime.PauseContainerRequest) (_ *runtime.PauseContainerResponse, err error) {
+	if err := in.checkInitialized(); err != nil {
+		return nil, err
+	}
+	log.G(ctx).Infof("PauseContainer for %q", r.GetContainerId())
+	defer func() {
+		if err != nil {
+			log.G(ctx).WithError(err).Errorf("PauseContainer for %q failed", r.GetContainerId())
+		} else {
+			log.G(ctx).Infof("PauseContainer for %q returns successfully", r.GetContainerId())
+		}
+	}()
+	res, err := in.c.PauseContainer(ctrdutil.WithNamespace(ctx), r)
+	return res, errdefs.ToGRPC(err)
+}
+
+func (in *instrumentedService) ResumeContainer(ctx context.Context, r *runtime.ResumeContainerRequest) (_ *runtime.ResumeContainerResponse, err error) {
+	if err := in.checkInitialized(); err != nil {
+		return nil, err
+	}
+	log.G(ctx).Infof("ResumeContainer for %q", r.GetContainerId())
+	defer func() {
+		if err != nil {
+			log.G(ctx).WithError(err).Errorf("ResumeContainer for %q failed", r.GetContainerId())
+		} else {
+			log.G(ctx).Infof("ResumeContainer for %q returns successfully", r.GetContainerId())
+		}
+	}()
+	res, err := in.c.ResumeContainer(ctrdutil.WithNamespace(ctx), r)
+	return res, errdefs.ToGRPC(err)
+}
+
 func (in *instrumentedService) ListContainers(ctx context.Context, r *runtime.ListContainersRequest) (res *runtime.ListContainersResponse, err error) {
 	if err := in.checkInitialized(); err != nil {
 		return nil, err
