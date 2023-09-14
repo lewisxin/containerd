@@ -517,6 +517,7 @@ func (c *criService) generateAndSendContainerEvent(ctx context.Context, containe
 		podSandboxStatus = nil
 	}
 	containerStatuses, err := c.getContainerStatuses(ctx, sandboxID)
+	log.G(ctx).Infof("generateAndSendContainerEvent: got container status for sandboxID %q: %v", sandboxID, containerStatuses)
 	if err != nil {
 		log.G(ctx).Errorf("Failed to get container statuses for container event for sandboxID %q: %v", sandboxID, err)
 	}

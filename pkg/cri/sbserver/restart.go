@@ -380,6 +380,8 @@ func (c *criService) loadContainer(ctx context.Context, cntr containerd.Containe
 					// Start exit monitor.
 					c.eventMonitor.startContainerExitMonitor(context.Background(), id, status.Pid, exitCh)
 				}
+			case containerd.Paused:
+				fmt.Println(">>>> loadContainer: containerd.Paused")
 			case containerd.Stopped:
 				// Task is stopped. Update status and delete the task.
 				if _, err := t.Delete(ctx, containerd.WithProcessKill); err != nil && !errdefs.IsNotFound(err) {

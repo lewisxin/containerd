@@ -95,11 +95,13 @@ func toCRIContainerStatus(container containerstore.Container, spec *runtime.Imag
 	}
 
 	// If container is in the created state, not set started and finished unix timestamps
-	var st, ft int64
+	var st, ft, pt int64
 	switch status.State() {
 	case runtime.ContainerState_CONTAINER_RUNNING:
 		// If container is in the running state, set started unix timestamps
 		st = status.StartedAt
+	case runtime.ContainerState_CONTAINER_PAUSED:
+		pt = status.PausedAt
 	case runtime.ContainerState_CONTAINER_EXITED, runtime.ContainerState_CONTAINER_UNKNOWN:
 		st, ft = status.StartedAt, status.FinishedAt
 	}
@@ -111,6 +113,7 @@ func toCRIContainerStatus(container containerstore.Container, spec *runtime.Imag
 		CreatedAt:   status.CreatedAt,
 		StartedAt:   st,
 		FinishedAt:  ft,
+		PausedAt:    pt,
 		ExitCode:    status.ExitCode,
 		Image:       spec,
 		ImageRef:    imageRef,
