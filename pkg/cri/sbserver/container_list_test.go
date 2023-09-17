@@ -205,6 +205,7 @@ func TestListContainers(t *testing.T) {
 	createdAt := time.Now().UnixNano()
 	startedAt := time.Now().UnixNano()
 	finishedAt := time.Now().UnixNano()
+	pausedAt := time.Now().UnixNano()
 	containersInStore := []containerForTest{
 		{
 			metadata: containerstore.Metadata{
@@ -251,6 +252,15 @@ func TestListContainers(t *testing.T) {
 				CreatedAt: createdAt,
 			},
 		},
+		{
+			metadata: containerstore.Metadata{
+				ID:        "c-5container",
+				Name:      "name-5",
+				SandboxID: "s-2abcdef1234",
+				Config:    &runtime.ContainerConfig{Metadata: &runtime.ContainerMetadata{Name: "name-5"}},
+			},
+			status: containerstore.Status{CreatedAt: createdAt, PausedAt: pausedAt},
+		},
 	}
 
 	expectedContainers := []*runtime.Container{
@@ -280,6 +290,13 @@ func TestListContainers(t *testing.T) {
 			PodSandboxId: "s-2abcdef1234",
 			Metadata:     &runtime.ContainerMetadata{Name: "name-4"},
 			State:        runtime.ContainerState_CONTAINER_CREATED,
+			CreatedAt:    createdAt,
+		},
+		{
+			Id:           "c-5container",
+			PodSandboxId: "s-2abcdef1234",
+			Metadata:     &runtime.ContainerMetadata{Name: "name-5"},
+			State:        runtime.ContainerState_CONTAINER_PAUSED,
 			CreatedAt:    createdAt,
 		},
 	}
